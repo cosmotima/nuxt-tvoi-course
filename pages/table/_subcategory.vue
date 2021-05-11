@@ -1,6 +1,6 @@
 <template>
   <div class="v-table" v-show="isPageFound">
-    <h1>Все курсы по {{ this.title }}</h1>
+    <h1>Все курсы по {{ this.$route.params.subcategory }}</h1>
     <app-table-filters ref="tableFilters" @filterProducts="filterProducts" />
     <div class="app-table__header">
       <p>Name</p>
@@ -45,16 +45,11 @@ export default {
     appTableFilters,
     NotFoundPage
   },
-  //async fetch({ store, route }) {
-  async asyncData({ store, route, context }) {
+  async asyncData({ store, route }) {
     const courses = await store.dispatch(
       "GET_COURSES_BY_SUBCATEGORY",
       route.params.subcategory
     )
-    // if (courses == "Error") {
-    //   console.log("400 400 400 400")
-    //    context.error()
-    // }
     let isPageFound = (courses.length > 0) ? true : false
     return { courses, isPageFound };
   },
@@ -62,12 +57,12 @@ export default {
     return {
       itemsPerPage: 4,
       currentPage: 1,
-      //courses: [],
       sortedCourses: this.COURSES,
     };
   },
   computed: {
-    ...mapGetters(["COURSES", "ALL_COURSES", "SEARCH_VALUE"]),
+    //TODO: может можно избавиться от импорта геттера COURSES
+    ...mapGetters(["COURSES"]),
     pages() {
       try {
         if (this.sortedCourses === undefined) {
@@ -87,19 +82,11 @@ export default {
           return this.sortedCourses.slice(from, to);
         }
       } catch (error) {}
-    },
-    title() {
-      return Object.keys(this.$route.query) == "search"
-        ? this.$route.query.search
-        : this.$route.params.subcategory;
-    },
+    }
   },
   methods: {
     ...mapActions([
-      "GET_COURSES_BY_QUERY_FROM_API",
       "GET_COURSES_BY_SUBCATEGORY",
-      "GET_ALL_COURSES",
-      "GET_SEARCH_VALUE_TO_STATE",
     ]),
     pageClick(page) {
       return (this.currentPage = page);
@@ -141,63 +128,13 @@ export default {
       this.currentPage = 1;
     },
   },
-  async beforeRouteUpdate(to, from, next) {
-    next();
-    if (Object.keys(this.$route.query) == "search") {
-      await this.GET_ALL_COURSES();
-
-      let value = this.SEARCH_VALUE;
-      let allCourses = this.ALL_COURSES;
-      if (allCourses.length > 0) {
-        this.isPageFound = true;
-        this.sortedCourses = allCourses.filter(function (item) {
-          return item.name.toLowerCase().includes(value.toLowerCase());
-        });
-      }
-      this.courses = this.sortedCourses;
-      this.$refs.tableFilters.removeAllFilter();
-    } else {
-      // await this.GET_COURSES_BY_QUERY_FROM_API(this.$route.query);
-      if (this.COURSES == undefined) {
-        this.isPageFound = false;
-      } else {
-        this.isPageFound = true;
-        this.courses = this.COURSES;
-        this.$refs.tableFilters.removeAllFilter();
-      }
-    }
-    if (this.courses.length < 1) {
-      this.isPageFound = false;
-    }
-  },
   async mounted() {
-    if (Object.keys(this.$route.query) == "search") {
-      await this.GET_ALL_COURSES();
-
-      let value =
-        this.SEARCH_VALUE == "" ? this.$route.query.search : this.SEARCH_VALUE;
-
-      let allCourses = this.ALL_COURSES;
-      if (allCourses.length > 0) {
-        this.isPageFound = true;
-        this.sortedCourses = allCourses.filter(function (item) {
-          return item.name.toLowerCase().includes(value.toLowerCase());
-        });
-      }
-      this.courses = this.sortedCourses;
-    } else {
-      //await this.GET_COURSES_BY_QUERY_FROM_API(this.$route.query);
       if (this.COURSES == undefined) {
         this.isPageFound = false;
       } else {
         this.isPageFound = true;
         this.courses = this.COURSES;
-        //this.$refs.tableFilters.removeAllFilter();
       }
-    }
-    if (this.courses.length < 1) {
-      this.isPageFound = false;
-    }
   },
 };
 </script>

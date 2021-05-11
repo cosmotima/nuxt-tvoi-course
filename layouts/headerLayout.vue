@@ -134,11 +134,7 @@ export default {
         this.category = null;
       }
     },
-  },
-  created() {},
-  mounted() {
-    // this.categories = this.CATEGORIES;
-  },
+  }
 };
 </script>
 

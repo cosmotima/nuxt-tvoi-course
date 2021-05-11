@@ -49,7 +49,6 @@ name: "app-pu-all-categories",
     }
   },
   mounted() {
-    console.log(this.$refs)
     let vm = this;
     document.addEventListener('click', function (item) {
       if (item.target === vm.$refs['popup-wrapper']) {

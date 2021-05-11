@@ -33,30 +33,21 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
 import AppLeftOtherSchools from "@/components/reviews/app-left-other-schools.vue";
 import appRevItem from "@/components/reviews/app-rev-item.vue";
 import AppSendReviewForm from "@/components/reviews/app-send-review-form.vue";
 
 export default {
-    layout: "headerLayout",
+  layout: "headerLayout",
   components: { appRevItem, AppLeftOtherSchools, AppSendReviewForm },
-  async asyncData({store, route}) {
+  async asyncData({ store, route }) {
     let schoolInRoute = route.params.school;
     await store.dispatch("GET_REVIEWS_FROM_API", schoolInRoute);
     const reviews = store.state.reviews;
-    const schools = await store.dispatch('GET_SCHOOLS_FROM_API');
-    return {reviews, schools}
+    const schools = await store.dispatch("GET_SCHOOLS_FROM_API");
+    return { reviews, schools };
   },
-//   data() {
-//     return {
-//       reviews: [],
-//       schools: [],
-//       schoolInRoute: ""
-//     };
-//   },
   methods: {
-    ...mapActions(["GET_REVIEWS_FROM_API", "GET_SCHOOLS_FROM_API"]),
     scrollMeTo(refName) {
       var element = this.$refs[refName];
       console.log(element.offsetTop);
@@ -64,36 +55,14 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["REVIEWS", "SCHOOLS"]),
-    // reviews() {
-    //     this.REVIEWS
-    // },
-    // schools() {
-    //     this.SCHOOLS
-    // },
-     currentSchool() {
+    currentSchool() {
       let schoolInR = this.$route.params.school;
 
       return this.schools.find(function (school) {
         return school.name.toLowerCase() == schoolInR;
       });
-    }
+    },
   },
-//   async beforeRouteUpdate(to, from, next) {
-//      next();
-//      this.schoolInRoute = this.$route.params.school;
-//     // await this.GET_REVIEWS_FROM_API(this.schoolInRoute);
-//      this.reviews = this.REVIEWS;
-//     // await this.GET_SCHOOLS_FROM_API();
-//      this.schools = this.SCHOOLS;
-//   },
-//   async mounted() {
-//      this.schoolInRoute = this.$route.params.school;
-//     // await this.$store.dispatch("GET_REVIEWS_FROM_API", this.schoolInRoute);
-//      this.reviews = this.REVIEWS;
-//     // await this.GET_SCHOOLS_FROM_API();
-//      this.schools = this.SCHOOLS;
-//   },
 };
 </script>
 
