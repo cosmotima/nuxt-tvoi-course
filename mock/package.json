@@ -1,0 +1,3 @@
+"scripts": {
+    "mock": "json-server --watch ./mock/db.js"
+  }

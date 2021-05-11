@@ -1,0 +1,12 @@
+{
+  "filters": [
+    {
+      "name": "diploma",
+      "value": true
+    },
+    {
+      "name": "discount",
+      "value": true
+    }
+  ]
+}
